@@ -19,6 +19,7 @@ function AppHeader() {
 	  			<td>
 	  				<a className="App-link"
 	  					href="/#"
+	  					// which one is right? this one?
 	  					onClick={(e, value) => mainForm.handleClick(e, 'dynamo')}>
 	  					Dynamo Table
 	  				</a>
@@ -26,6 +27,7 @@ function AppHeader() {
 	  			<td>
 	  				<a className = "App-link"
 		  				href="/#"
+		  				// or this one?
 		  				onClick={e => mainForm.handleClear(e)}>
 		  				Clear all
 	  				</a>

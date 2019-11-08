@@ -73,18 +73,18 @@ class MainForm extends React.Component {
     super(props);
     this.state = { data: data, cols: columns };
     this.handleClear = this.handleClear.bind(this);
-    // this.handleDynamo = this.handleDynamo.bind(this);
   }
 
   handleClear() {
     this.setState = { data: [], cols: [] };
+    // I don't know how to make this work and also re-render after clearing
   }
 
   render() {
     return (
       <div>
         <ReactTable 
-          data={data}
+          data={this.state.data}
           columns={columns}
           defaultPageSize = {25}
           pageSizeOptions = {[25, 50, 100]} /> 
