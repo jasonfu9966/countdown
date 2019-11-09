@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
-const mainForm = require('./MainForm')
+const mainForm = require('./MainForm');
+
+// const mf = new MainForm();
 
 function AppHeader() {
   return (
