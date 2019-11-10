@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import MainForm from './MainForm';
 import AppHeader from './header';
 import * as serviceWorker from './serviceWorker';

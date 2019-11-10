@@ -8,12 +8,12 @@ import "react-table/react-table.css";
 const AWS = require('aws-sdk');
 const config = require('./config/config');
 
-const isDev = process.env.NODE_ENV !== 'production';
-const port = process.env.PORT || 8080;
+// const isDev = process.env.NODE_ENV !== 'production';
+// const port = process.env.PORT || 8080;
 
 AWS.config.update(config.aws_local_config);
 
-var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+// var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 var params = {
@@ -21,7 +21,7 @@ var params = {
   Key: 'id'
 };
 
-var empty;
+var empty = [];
 var data = [{
   name: 'Roy Agasthyan',
   age: 26
@@ -82,7 +82,7 @@ class MainForm extends React.Component {
 
   handleClear(e) {
     e.preventDefault();
-    this.setState({ data: [], columns: [] });
+    this.setState({ data: empty, columns: empty });
     // I don't know how to make this work and also re-render after clearing
   }
 
@@ -90,8 +90,6 @@ class MainForm extends React.Component {
     docClient.scan(params, (err, dataP) => {
       if (err) throw err;
 
-      console.table(dataP.Items);
-      console.log(this);
       this.setState({
         data: dataP.Items.sort((a, b) => a.id - b.id)
       });
