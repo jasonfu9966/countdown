@@ -8,28 +8,20 @@ import "react-table/react-table.css";
 const AWS = require('aws-sdk');
 const config = require('./config/config');
 
-const isDev = process.env.NODE_ENV !== 'production';
-const port = process.env.PORT || 8080;
+// const isDev = process.env.NODE_ENV !== 'production';
+// const port = process.env.PORT || 8080;
 
 AWS.config.update(config.aws_local_config);
 
-var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
+// var ddb = new AWS.DynamoDB({ apiVersion: '2012-08-10' });
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 var params = {
   TableName: "Users",
   Key: 'id'
 };
-// docClient.scan(params, onScan);
 
-function onScan(err, data) {
-  if (err) throw err;
-
-  console.log(data.Items);
-  return data;
-}
-
-var empty;
+var empty = [];
 var data = [{
   name: 'Roy Agasthyan',
   age: 26
@@ -61,30 +53,54 @@ export const handleClear = e => {
 }
 
 const columns = [{
-  Header: 'Name',
-  accessor: 'name'
+  Header: 'ID',
+  accessor: 'id'
 }, {
-  Header: 'Age',
-  accessor: 'age'
+  Header: 'First Name',
+  accessor: 'First Name'
+}, {
+  Header: 'Last Name',
+  accessor: 'Last Name'
+}, {
+  Header: 'Gender',
+  accessor: 'Gender'
+}, {
+  Header: 'E-mail',
+  accessor: 'E-mail'
+}, {
+  Header: 'IP Address',
+  accessor: 'IP Address'
 }];
 
 class MainForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { data: data, cols: columns };
+  constructor() {
+    super();
+    this.state = { data, columns };
     this.handleClear = this.handleClear.bind(this);
-    // this.handleDynamo = this.handleDynamo.bind(this);
+    this.fetchData();
   }
 
-  handleClear() {
-    this.setState = { data: [], cols: [] };
+  handleClear(e) {
+    e.preventDefault();
+    this.setState({ data: empty, columns: empty });
+    // I don't know how to make this work and also re-render after clearing
+  }
+
+  fetchData() {
+    docClient.scan(params, (err, dataP) => {
+      if (err) throw err;
+
+      this.setState({
+        data: dataP.Items.sort((a, b) => a.id - b.id)
+      });
+    });
   }
 
   render() {
     return (
       <div>
         <ReactTable 
-          data={data}
+          data={this.state.data}
           columns={columns}
           defaultPageSize = {25}
           pageSizeOptions = {[25, 50, 100]} /> 
