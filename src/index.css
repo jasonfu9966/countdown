@@ -7,7 +7,40 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
+#answer {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.main {
+  padding: 5%;
+}
+
+input {
+  margin: 5px;
+}
+
+.numbersButton {
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+.numInput {}
