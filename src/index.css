@@ -45,4 +45,10 @@ input {
   margin-top: 10px;
 }
 
-.numInput {}
+footer {
+  font-size: 12px;
+}
+
+a {
+  color: #09d3ac;
+}
