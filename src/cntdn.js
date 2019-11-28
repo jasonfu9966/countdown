@@ -3,19 +3,24 @@
  * Countdown game solver
  *
  * James Stanley 2014
+ * Updated for ES6 Jason Fu 2019
  */
+
+export function solve_letters(letters, cb) {
+  return _recurse_solve_letters(letters, dictionary, {}, cb, '');
+}
 
 function _recurse_solve_letters(letters, node, used_letter, cb, answer) {
   if (node[0])
     cb(answer, node[0]);
 
-  if (answer.length == letters.length)
+  if (answer.length === letters.length)
     return;
 
-  var done = {};
+  let done = {};
 
-  for (var i = 0; i < letters.length; i++) {
-    var c = letters.charAt(i);
+  for (let i = 0; i < letters.length; i++) {
+    let c = letters.charAt(i);
 
     if (used_letter[i] || done[c])
       continue;
@@ -29,20 +34,16 @@ function _recurse_solve_letters(letters, node, used_letter, cb, answer) {
   }
 }
 
-function solve_letters(letters, cb) {
-  _recurse_solve_letters(letters, dictionary, {}, cb, '');
-}
+export function sufficient_letters(word, letters) {
+  let count = {};
 
-function sufficient_letters(word, letters) {
-  var count = {};
-
-  for (var i = 0; i < letters.length; i++) {
+  for (let i = 0; i < letters.length; i++) {
     if (!count[letters.charAt(i)])
       count[letters.charAt(i)] = 0;
     count[letters.charAt(i)]++;
   }
 
-  for (var i = 0; i < word.length; i++) {
+  for (let i = 0; i < word.length; i++) {
     if (!count[word.charAt(i)])
       return false;
     count[word.charAt(i)]--;
@@ -53,9 +54,9 @@ function sufficient_letters(word, letters) {
   return true;
 }
 
-function word_in_dictionary(word) {
-  var node = dictionary;
-  var idx = 0;
+export function word_in_dictionary(word) {
+  let node = dictionary;
+  let idx = 0;
 
   while (idx < word.length) {
     node = node[word.charAt(idx)];
@@ -69,10 +70,10 @@ function word_in_dictionary(word) {
   return true;
 }
 
-var bestdiff;
-var bestvalsums;
+const bestdiff;
+const bestvalsums;
 
-var OPS = {
+const OPS = {
   "+": function(n1, n2) { if (n1 < 0 || n2 < 0) return false; return n1 + n2; },
   "-": function(n1, n2) { if (n2 >= n1) return false; return n1 - n2; },
   "_": function(n2, n1) { if (n2 >= n1) return false; return n1 - n2; },
@@ -81,7 +82,7 @@ var OPS = {
   "?": function(n2, n1) { if (n2 == 0 || n1 % n2 != 0) return false; return n1 / n2; },
 };
 
-var OPCOST = {
+const OPCOST = {
   "+": 1,
   "-": 1.05,
   "_": 1.05,
@@ -93,16 +94,16 @@ var OPCOST = {
 function _recurse_solve_numbers(numbers, searchedi, was_generated, target, levels, valsums, trickshot) {
   levels--;
 
-  for (var i = 0; i < numbers.length - 1; i++) {
-    var ni = numbers[i];
+  for (let i = 0; i < numbers.length - 1; i++) {
+    let ni = numbers[i];
 
     if (ni === false)
       continue;
 
     numbers[i] = false;
 
-    for (var j = i + 1; j < numbers.length; j++) {
-      var nj = numbers[j];
+    for (let j = i + 1; j < numbers.length; j++) {
+      let nj = numbers[j];
 
       if (nj === false)
         continue;
@@ -110,19 +111,19 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
       if (i < searchedi && !was_generated[i] && !was_generated[j])
         continue;
 
-      for (var o in OPS) {
-        var r = OPS[o](ni[0], nj[0]);
+      for (let o in OPS) {
+        let r = OPS[o](ni[0], nj[0]);
         if (r === false)
           continue;
 
-        var op_cost = Math.abs(r);
+        let op_cost = Math.abs(r);
         while (op_cost % 10 == 0 && op_cost != 0)
           op_cost /= 10;
         if ((ni[0] == 10 || nj[0] == 10) && o == '*') // HACK: multiplication by 10 is cheap
           op_cost = 1;
         op_cost *= OPCOST[o];
 
-        var newvalsums = valsums + op_cost;
+        let newvalsums = valsums + op_cost;
 
         if ((Math.abs(r - target) < Math.abs(bestresult[0] - target)) ||
           (Math.abs(r - target) == Math.abs(bestresult[0] - target) && (trickshot || newvalsums < bestvalsums))) {
@@ -131,7 +132,7 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
         }
 
         numbers[j] = [r, o, ni, nj];
-        var old_was_gen = was_generated[j];
+        let old_was_gen = was_generated[j];
         was_generated[j] = true;
 
         if (levels > 0 && (trickshot || bestresult[0] != target || newvalsums < bestvalsums))
@@ -147,12 +148,12 @@ function _recurse_solve_numbers(numbers, searchedi, was_generated, target, level
 }
 
 function tidyup_result(result) {
-  var mapping = {
+  let mapping = {
     "?": "/",
     "_": "-"
   };
 
-  var swappable = {
+  let swappable = {
     "*": true,
     "+": true
   };
@@ -160,8 +161,8 @@ function tidyup_result(result) {
   if (result.length < 4)
     return result;
 
-  for (var i = 2; i < result.length; i++) {
-    var child = result[i];
+  for (let i = 2; i < result.length; i++) {
+    let child = result[i];
 
     child = tidyup_result(child);
 
@@ -175,12 +176,12 @@ function tidyup_result(result) {
 
   if (result[1] in mapping) {
     result[1] = mapping[result[1]];
-    var j = result[2];
+    let j = result[2];
     result[2] = result[3];
     result[3] = j;
   } else if (swappable[result[1]]) {
     childs = result.slice(2).sort(function(a, b) { return b[0] - a[0]; });
-    for (var i = 2; i < result.length; i++)
+    for (let i = 2; i < result.length; i++)
       result[i] = childs[i - 2];
   }
 
@@ -191,19 +192,19 @@ function fullsize(array) {
   if (array.constructor != Array)
     return 0;
 
-  var l = 0;
+  let l = 0;
 
-  for (var i = 0; i < array.length; i++)
+  for (let i = 0; i < array.length; i++)
     l += fullsize(array[i]);
 
   return l + array.length;
 }
 
 function serialise_result(result) {
-  var childparts = [];
+  let childparts = [];
 
-  for (var i = 2; i < result.length; i++) {
-    var child = result[i];
+  for (let i = 2; i < result.length; i++) {
+    let child = result[i];
 
     if (child.length >= 4)
       childparts.push(serialise_result(child));
@@ -211,41 +212,41 @@ function serialise_result(result) {
 
   childparts = childparts.sort(function(a, b) { return fullsize(b) - fullsize(a); });
 
-  var parts = [];
-  for (var i = 0; i < childparts.length; i++) {
+  let parts = [];
+  for (let i = 0; i < childparts.length; i++) {
     parts = parts.concat(childparts[i]);
   }
 
-  var sliced = result.slice(2).map(function(l) { return l[0]; });
-  var thispart = [result[0], result[1]].concat(sliced);
+  let sliced = result.slice(2).map(function(l) { return l[0]; });
+  let thispart = [result[0], result[1]].concat(sliced);
 
   return parts.concat([thispart]);
 }
 
 function stringify_result(serialised, target) {
-  var output = '';
+  let output = '';
 
   serialised = serialised.slice(0);
 
-  for (var i = 0; i < serialised.length; i++) {
-    var x = serialised[i];
+  for (let i = 0; i < serialised.length; i++) {
+    let x = serialised[i];
 
-    var args = x.slice(2);
+    let args = x.slice(2);
     output += args.join(' ' + x[1] + ' ') + ' = ' + x[0] + '\n';
   }
 
-  var result = serialised[serialised.length - 1][0];
+  let result = serialised[serialised.length - 1][0];
   if (result != target)
     output += '(off by ' + (Math.abs(result - target)) + ')\n';
 
   return output;
 }
 
-function _solve_numbers(numbers, target, trickshot) {
+export function _solve_numbers(numbers, target, trickshot) {
   numbers = numbers.map(function(x) { return [x, false] });
 
-  var was_generated = [];
-  for (var i = 0; i < numbers.length; i++)
+  let was_generated = [];
+  for (let i = 0; i < numbers.length; i++)
     was_generated.push(false);
 
   bestresult = [0, 0];
@@ -256,7 +257,7 @@ function _solve_numbers(numbers, target, trickshot) {
   return bestresult;
 }
 
-function solve_numbers(numbers, target, trickshot) {
+export function solve_numbers(numbers, target, trickshot) {
   numbers.sort();
   bestresult = [numbers[0], numbers[0]];
 
@@ -264,7 +265,7 @@ function solve_numbers(numbers, target, trickshot) {
    * have an interesting answer that's close than an exact answer
    */
   if (!trickshot) {
-    for (var i = 1; i < numbers.length; i++) {
+    for (let i = 1; i < numbers.length; i++) {
       if (Math.abs(numbers[i] - target) < Math.abs(bestresult[0] - target)) {
         bestresult = [numbers[i], numbers[i]];
         bestvalsums = numbers[i];
