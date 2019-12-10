@@ -2,7 +2,7 @@
 
 I'm using it to learn react.
 
-###CURRENT STATUS:
+#### CURRENT STATUS:
 
 Numbers and letters solvers both incomplete.
 
