@@ -72,6 +72,83 @@ export function word_in_dictionary(word) {
   return true;
 }
 */
+
+export function findEquations(numbers, target) {
+  let allSuccesses = [];
+  for (let number of numbers) {
+    let newNums = numbers.slice();
+    newNums.splice(newNums.indexOf(number), 1);
+    let result = getOperations(newNums, number, target);
+    if (result.success) {
+      allSuccesses.push(result);
+      console.log(number + result.output);
+    }
+  }
+  return allSuccesses;
+}
+
+function getOperations(numbers, midNumber, target) {
+  let midResult = { success: false, output: "" };
+  if (midNumber === target) {
+    midResult.success = true;
+    midResult.output = "";
+  }
+
+  for (let number of numbers) {
+    let newNums = numbers.slice();
+    newNums.splice(newNums.indexOf(number), 1);
+
+    if (newNums.length === 0) {
+      if (midNumber + number === target) {
+        midResult.success = true;
+        midResult.output = " + " + number;
+        return midResult;
+      }
+      if (midNumber - number === target) {
+        midResult.success = true;
+        midResult.output = " - " + number;
+        return midResult;
+      }
+      if (midNumber * number === target) {
+        midResult.success = true;
+        midResult.output = " * " + number;
+        return midResult;
+      }
+      if (midNumber / number === target) {
+        midResult.success = true;
+        midResult.output = " / " + number;
+        return midResult;
+      }
+      midResult.success = false;
+      midResult.output = "f" + number;
+      return midResult;
+    } else {
+      midResult = getOperations(newNums, midNumber + number, target);
+      if (midResult.success) {
+        midResult.output = " + " + number + midResult.output;
+        return midResult;
+      }
+
+      midResult = getOperations(newNums, midNumber - number, target);
+      if (midResult.success) {
+        midResult.output = " - " + number + midResult.output;
+        return midResult;
+      }
+      midResult = getOperations(newNums, midNumber * number, target);
+      if (midResult.success) {
+        midResult.output = " * " + number + midResult.output;
+        return midResult;
+      }
+      midResult = getOperations(newNums, midNumber / number, target);
+      if (midResult.success) {
+        midResult.output = " / " + number + midResult.output;
+        return midResult;
+      }
+    }
+  }
+  return midResult;
+}
+
 let bestdiff;
 let bestvalsums;
 
@@ -101,6 +178,7 @@ export function solve_numbers(numbers, target, trickshot) {
    * have an interesting answer that's close than an exact answer
    */
   if (!trickshot) {
+    // what's the point of this?
     for (let i = 1; i < numbers.length; i++) {
       if (Math.abs(numbers[i] - target) < Math.abs(bestresult[0] - target)) {
         bestresult = [numbers[i], numbers[i]];
@@ -120,12 +198,10 @@ export function solve_numbers(numbers, target, trickshot) {
 }
 
 export function _solve_numbers(numbers, target, trickshot, bestresult) {
-  numbers = numbers.map(function(x) { return [x, false] });
+  numbers = numbers.map(number => [number, false]);
 
-  let was_generated = [];
-  for (let i = 0; i < numbers.length; i++)
-    was_generated.push(false);
-
+  // changed
+  let was_generated = Array(numbers.length).fill(false);
   bestresult = [0, 0];
 
   /* attempt to solve with dfs */

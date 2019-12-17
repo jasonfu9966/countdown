@@ -11,10 +11,11 @@ export default class numbers extends Component {
     e.preventDefault();
     // run algorithm
     let boxes = document.querySelectorAll('.numInput');
-    let nums = [].map.call(boxes, input => input.value);
+    let nums = [].map.call(boxes, input => input.value).map(x => parseInt(x));
     let target = nums.pop();
 
-    console.log(cntdn.solve_numbers(nums, target, false));
+    // console.log(cntdn.solve_numbers(nums, target, false));
+    console.log(cntdn.findEquations(nums, target));
 
   }
 
