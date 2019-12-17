@@ -15,8 +15,7 @@ export default class numbers extends Component {
     let target = nums.pop();
 
     // console.log(cntdn.solve_numbers(nums, target, false));
-    console.log(cntdn.findEquations(nums, target));
-
+    this.setState({ eqs: cntdn.findEquations(nums, target) });
   }
 
   clearNums(e) {
@@ -55,7 +54,11 @@ export default class numbers extends Component {
           >Clear</button>
 
         <p>Answers:</p>
-        <div id="numberAnswers" value={this.state.answer}></div>
+        <div id="numberAnswers">
+        <ul>{this.state.eqs.map(eq => 
+          <li key={eq}>{eq}</li>)}
+        </ul>
+        </div>
       </div>
     );
   }

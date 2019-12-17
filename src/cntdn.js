@@ -80,8 +80,7 @@ export function findEquations(numbers, target) {
     newNums.splice(newNums.indexOf(number), 1);
     let result = getOperations(newNums, number, target);
     if (result.success) {
-      allSuccesses.push(result);
-      console.log(number + result.output);
+      allSuccesses.push(number + result.output);
     }
   }
   return allSuccesses;
