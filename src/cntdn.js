@@ -171,7 +171,7 @@ const OPCOST = {
 
 export function solve_numbers(numbers, target, trickshot) {
   numbers.sort();
-  var bestresult = [numbers[0], numbers[0]];
+  let bestresult = [numbers[0], numbers[0]];
 
   /* see if one of these numbers is the answer; with trickshot you'd rather
    * have an interesting answer that's close than an exact answer
@@ -185,7 +185,7 @@ export function solve_numbers(numbers, target, trickshot) {
       }
     }
     if (bestresult[0] === target)
-      return target + " = " + target;
+      return `${target} = ${target}`;
   }
 
   return stringify_result(
@@ -298,7 +298,7 @@ function tidyup_result(result) {
     result[2] = result[3];
     result[3] = j;
   } else if (swappable[result[1]]) {
-    let childs = result.slice(2).sort(function(a, b) { return b[0] - a[0]; });
+    let childs = result.slice(2).sort((a, b) => b[0] - a[0]);
     for (let i = 2; i < result.length; i++)
       result[i] = childs[i - 2];
   }
@@ -316,14 +316,14 @@ function serialise_result(result) {
       childparts.push(serialise_result(child));
   }
 
-  childparts = childparts.sort(function(a, b) { return fullsize(b) - fullsize(a); });
+  childparts = childparts.sort((a, b) => fullsize(b) - fullsize(a));
 
   let parts = [];
   for (let i = 0; i < childparts.length; i++) {
     parts = parts.concat(childparts[i]);
   }
 
-  let sliced = result.slice(2).map(function(l) { return l[0]; });
+  let sliced = result.slice(2).map(l => l[0]);
   let thispart = [result[0], result[1]].concat(sliced);
 
   return parts.concat([thispart]);
@@ -346,16 +346,14 @@ function stringify_result(serialised, target) {
 
   serialised = serialised.slice(0);
 
-  for (let i = 0; i < serialised.length; i++) {
-    let x = serialised[i];
-
+  for (let x of serialised) {
     let args = x.slice(2);
-    output += args.join(' ' + x[1] + ' ') + ' = ' + x[0] + '\n';
+    output += `${args.join(` ${x[1]} `)} = ${x[0]}\n`;
   }
 
   let result = serialised[serialised.length - 1][0];
   if (result !== target)
-    output += '(off by ' + (Math.abs(result - target)) + ')\n';
+    output += `(off by ${Math.abs(result - target)})\n`;
 
   return output;
 }

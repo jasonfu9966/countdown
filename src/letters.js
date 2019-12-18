@@ -29,7 +29,9 @@ export default class letters extends Component {
           >Clear</button>
 
         <p>Answers:</p>
-        <div id="letterAnswers">{this.state.words}</div>
+        <div id="letterAnswers"><ul>{this.state.eqs.map(eq => 
+          <li key={eq}>{eq}</li>)}
+        </ul></div>
       </div>
     );
   }
